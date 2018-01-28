@@ -1,0 +1,20 @@
+#!/usr/bin/env python
+# Prints sum of an attribute of type period for a set of tasks.
+# Usage: task 3 export | periodsum someattribute
+
+import sys
+import isodate
+from datetime import timedelta
+import json
+
+if len(sys.argv) > 1:
+    attribute = sys.argv[1]
+else:
+    attribute = "estimate"
+
+tasks = json.load(sys.stdin)
+s = timedelta(0)
+for t in tasks:
+    s = s + isodate.parse_duration(t.get(attribute, "PT0S"))
+
+print(isodate.duration_isoformat(s))

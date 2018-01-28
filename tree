@@ -1,0 +1,74 @@
+#!/usr/bin/env python
+# Prints a dependency tree of a set of tasks.
+# Usage: task 3 export | tree sometag
+# sometag is the name of the unique tag of the root task from which
+# all its dependencies sprout. Defult is "goal".
+#
+# Example output:
+# - [1] Root
+#   - [2] Subtask A
+#   - [3] Subtask B
+#     - [4] Subtask C
+#     - [5] Subtask D
+#       - [6] Subtask E
+#
+# The format is "- [id] description"
+# Dependency relations are
+# 1 -> 2,3
+# 3 -> 4,5
+# 5 -> 6
+
+import sys
+import json
+
+if len(sys.argv) > 1:
+    root_tag = sys.argv[1]
+else:
+    root_tag = "goal"
+
+tasks = json.load(sys.stdin)
+
+root = None
+for t in tasks:
+    if root_tag in t["tags"]:
+        root = t
+        break
+
+if root == None:
+    print("No root task has required tag:", root_tag)
+    exit(0)
+
+def subtasks(task):
+
+    uuids = task.get("depends")
+    sts = []
+    if uuids == None:
+        return sts
+    uuids = uuids.split(",")
+    for u in uuids:
+        for t in tasks:
+            if t.get("uuid") == u:
+                sts.append(t)
+                break
+
+    return sts
+
+def print_tree(root, spaces):
+
+    o = "- [" + str(root["id"]) + "] "
+    if root.get("printed"):
+        o = o + "*** ALREADY PRINTED -> Circularity ***"
+    else:
+        o = o + root["description"]
+
+    if spaces > 0:
+        o = "  " * spaces + o
+
+    print(o)
+    root["printed"] = True
+
+    sts = subtasks(root)
+    for st in sts:
+        print_tree(st, spaces + 2)
+
+print_tree(root, 0)
