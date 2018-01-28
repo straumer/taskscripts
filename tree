@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# Prints a dependency tree of a set of tasks.
+# Prints an acyclic dependency tree of a set of tasks.
 # Usage: task 3 export | tree sometag
 # sometag is the name of the unique tag of the root task from which
 # all its dependencies sprout. Defult is "goal".
