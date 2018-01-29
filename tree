@@ -23,8 +23,11 @@ import json
 
 if len(sys.argv) > 1:
     root_tag = sys.argv[1]
+    if len(sys.argv) > 2:
+        period_attribute = sys.argv[2]
 else:
     root_tag = "goal"
+    period_attribute = "estimate"
 
 tasks = json.load(sys.stdin)
 
@@ -59,7 +62,7 @@ def print_tree(root, spaces):
     if root.get("printed"):
         o = o + "*** ALREADY PRINTED -> Circularity ***"
     else:
-        o = o + root["description"]
+        o = o + root["description"] + "(" + root.get(period_attribute, "PT0S") + ")"
 
     if spaces > 0:
         o = "  " * spaces + o
