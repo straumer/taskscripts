@@ -62,7 +62,7 @@ def print_tree(root, spaces):
     if root.get("printed"):
         o = o + "*** ALREADY PRINTED -> Circularity ***"
     else:
-        o = o + root["description"] + "(" + root.get(period_attribute, "PT0S") + ")"
+        o = o + root["description"] + " (" + root.get(period_attribute, "PT0S") + ")"
 
     if spaces > 0:
         o = "  " * spaces + o
