@@ -67,8 +67,9 @@ def print_tree(root, spaces):
     if spaces > 0:
         o = "  " * spaces + o
 
-    print(o)
-    root["printed"] = True
+    if root.get("status") in ["active", "pending"]:
+        print(o)
+        root["printed"] = True
 
     sts = subtasks(root)
     for st in sts:
